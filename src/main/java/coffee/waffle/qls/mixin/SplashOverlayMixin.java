@@ -46,10 +46,10 @@ import java.util.function.Consumer;
 @Mixin(SplashOverlay.class)
 public abstract class SplashOverlayMixin extends Overlay {
   @Final
-  @Shadow
+  @Shadow(remap = false)
   private MinecraftClient client;
 
-  @Shadow
+  @Shadow(remap = false)
   private static int withAlpha(int color, int alpha) {
     throw new UnsupportedOperationException("Shadowed method somehow called outside mixin. Exorcise your computer.");
   }
@@ -57,6 +57,7 @@ public abstract class SplashOverlayMixin extends Overlay {
   private QuiltLoadingScreen quiltLoadingScreen$loadingScreen;
 
   @Inject(
+          remap = false,
           method = "<init>(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/resource/ResourceReload;Ljava/util/function/Consumer;Z)V",
           at = @At("TAIL")
   )
@@ -66,6 +67,7 @@ public abstract class SplashOverlayMixin extends Overlay {
 
   // Replace the colour used for the background fill of the splash screen
   @ModifyArg(
+          remap = false,
           method = "render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V",
           at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/SplashOverlay;fill(Lnet/minecraft/client/util/math/MatrixStack;IIIII)V"),
           index = 5
@@ -79,6 +81,7 @@ public abstract class SplashOverlayMixin extends Overlay {
 
   // For some reason Mojang decided to not use `fill` in a specific case so I have to replace a local variable
   @ModifyVariable(
+          remap = false,
           method = "render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V",
           at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/function/IntSupplier;getAsInt()I", ordinal = 2),
           ordinal = 4 // int m (or int o according to mixin apparently)
@@ -89,6 +92,7 @@ public abstract class SplashOverlayMixin extends Overlay {
 
   // Render before third getWindow to render before the logo
   @Inject(
+          remap = false,
           method = "render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V",
           at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getWindow()Lnet/minecraft/client/util/Window;", ordinal = 2),
           locals = LocalCapture.CAPTURE_FAILSOFT

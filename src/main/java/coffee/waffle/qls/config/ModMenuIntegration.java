@@ -23,7 +23,7 @@
  */
 
 package coffee.waffle.qls.config;
-
+/*
 import coffee.waffle.qls.QuiltLoadingScreen;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
@@ -34,3 +34,4 @@ public class ModMenuIntegration implements ModMenuApi {
     return parent -> MidnightConfig.getScreen(parent, QuiltLoadingScreen.MODID);
   }
 }
+*/

@@ -1,35 +1,34 @@
-// Inspired in part by the buildscripts of FabricMC/fabric
-
 plugins {
-  id "fabric-loom" version "0.9.+"
+  id "org.quiltmc.loom" version "0.9.local"
   id "com.modrinth.minotaur" version "1.2.+"
   id "org.cadixdev.licenser" version "0.6.+"
-  id "io.github.juuxel.loom-quiltflower" version "1.2.+"
 }
 
 String mod_version = "2.2.2-SNAPSHOT"
 
-String minecraft_version = "1.17.1"   // https://fabricmc.net/versions.html
-String yarn_mappings = "43"           // https://fabricmc.net/versions.html
-String loader_version = "0.11.6"      // https://fabricmc.net/versions.html
-String fabric_version = "0.38.2+1.17" // https://fabricmc.net/versions.html
-String modmenu_version = "2.0.5"      // https://modrinth.com/mod/modmenu/versions
+String minecraft_version = "1.17.1"
+String quilt_mappings = "11"        // https://maven.quiltmc.org/service/rest/repository/browse/release/org/quiltmc/quilt-mappings/
+String quilt_version = "0.13.2"     // https://maven.quiltmc.org/service/rest/repository/browse/release/org/quiltmc/quilt-loader/
+String res_loader_version = "1.0.0" // https://maven.quiltmc.org/service/rest/repository/browse/snapshot/org/quiltmc/qsl/core/resource-loader
+// String modmenu_version = "2.0.11"     // https://modrinth.com/mod/modmenu/versions
 
 archivesBaseName = "quilt-loading-screen"
 version = mod_version + "+" + minecraft_version
 
 repositories {
+  maven { url "https://maven.waffle.coffee" }
   maven { url "https://maven.quiltmc.org/repository/release/" }
-  maven { url "https://maven.terraformersmc.com" }
+  maven { url "https://maven.quiltmc.org/repository/snapshot/" }
+  // maven { url "https://maven.terraformersmc.com" }
 }
 
 dependencies {
   minecraft "com.mojang:minecraft:${minecraft_version}"
-  mappings "net.fabricmc:yarn:${minecraft_version}+build.${yarn_mappings}:v2"
-  modImplementation "net.fabricmc:fabric-loader:${loader_version}"
-  include(modImplementation(fabricApi.module("fabric-resource-loader-v0", fabric_version)))
+  mappings "org.quiltmc:quilt-mappings:${minecraft_version}+build.${quilt_mappings}:v2"
+  modImplementation "org.quiltmc:quilt-loader:${quilt_version}"
+  include modImplementation("org.quiltmc.qsl.core:resource-loader:${res_loader_version}")
 
-  modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
+  // modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 }
 
 processResources {
