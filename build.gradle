@@ -1,6 +1,6 @@
 //file:noinspection GroovyAssignabilityCheck
 plugins {
-  id "org.quiltmc.loom" version "0.9.local"
+  id "org.quiltmc.loom" version "0.10.7ced5b7"
   id "com.modrinth.minotaur" version "1.2.+"
   id "org.cadixdev.licenser" version "0.6.+"
   id "maven-publish"
@@ -9,16 +9,24 @@ plugins {
 boolean is_release = false
 String mod_version = loom.modVersion
 String minecraft_version = "1.17.1"
-String quilt_mappings = "11"        // https://maven.quiltmc.org/service/rest/repository/browse/release/org/quiltmc/quilt-mappings/
-String quilt_version = "0.13.2"     // https://maven.quiltmc.org/service/rest/repository/browse/release/org/quiltmc/quilt-loader/
-String res_loader_version = "1.0.0" // https://maven.quiltmc.org/service/rest/repository/browse/snapshot/org/quiltmc/qsl/core/resource-loader
-// String modmenu_version = "2.0.14"     // https://modrinth.com/mod/modmenu/versions
+
+// https://maven.quiltmc.org/service/rest/repository/browse/release/org/quiltmc/quilt-mappings/
+String quilt_mappings = "15"
+
+// https://maven.quiltmc.org/service/rest/repository/browse/snapshot/org/quiltmc/quilt-loader/
+String quilt_version = "0.14.0-SNAPSHOT"
+
+// https://maven.quiltmc.org/service/rest/repository/browse/snapshot/org/quiltmc/qsl/core/resource-loader/
+String res_loader_version = "1.0.0-SNAPSHOT"
+
+// https://modrinth.com/mod/modmenu/versions
+// String modmenu_version = "2.0.14"
 
 archivesBaseName = "quilt-loading-screen"
 version = mod_version + "+" + minecraft_version + (!is_release ? "-SNAPSHOT" : "")
 
 repositories {
-  maven { url "https://maven.waffle.coffee" }
+  // maven { url "https://maven.waffle.coffee/snapshots/" }
   maven { url "https://maven.quiltmc.org/repository/release/" }
   maven { url "https://maven.quiltmc.org/repository/snapshot/" }
   // maven { url "https://maven.terraformersmc.com" }
@@ -65,17 +73,7 @@ publishing {
   }
   repositories {
     maven {
-      name = "emmavenReleases"
-      url = "https://maven.waffle.coffee/releases"
-      credentials {
-        username = System.getenv().MAVEN_USER
-        password = System.getenv().MAVEN_PASS
-      }
-      authentication { basic(BasicAuthentication) }
-    }
-    maven {
-      name = "emmavenSnapshots"
-      url = "https://maven.waffle.coffee/snapshots"
+      url = System.getenv().MAVEN_URL
       credentials {
         username = System.getenv().MAVEN_USER
         password = System.getenv().MAVEN_PASS
