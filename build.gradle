@@ -1,19 +1,21 @@
+//file:noinspection GroovyAssignabilityCheck
 plugins {
   id "org.quiltmc.loom" version "0.9.local"
   id "com.modrinth.minotaur" version "1.2.+"
   id "org.cadixdev.licenser" version "0.6.+"
+  id "maven-publish"
 }
 
-String mod_version = "2.2.2-SNAPSHOT"
-
+boolean is_release = false
+String mod_version = loom.modVersion
 String minecraft_version = "1.17.1"
 String quilt_mappings = "11"        // https://maven.quiltmc.org/service/rest/repository/browse/release/org/quiltmc/quilt-mappings/
 String quilt_version = "0.13.2"     // https://maven.quiltmc.org/service/rest/repository/browse/release/org/quiltmc/quilt-loader/
 String res_loader_version = "1.0.0" // https://maven.quiltmc.org/service/rest/repository/browse/snapshot/org/quiltmc/qsl/core/resource-loader
-// String modmenu_version = "2.0.11"     // https://modrinth.com/mod/modmenu/versions
+// String modmenu_version = "2.0.14"     // https://modrinth.com/mod/modmenu/versions
 
 archivesBaseName = "quilt-loading-screen"
-version = mod_version + "+" + minecraft_version
+version = mod_version + "+" + minecraft_version + (!is_release ? "-SNAPSHOT" : "")
 
 repositories {
   maven { url "https://maven.waffle.coffee" }
@@ -31,12 +33,8 @@ dependencies {
   // modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 }
 
-processResources {
-  inputs.property "version", project.version
-  filesMatching("fabric.mod.json") {
-    expand "version": project.version
-  }
-}
+// Comment this line out if you have good internet
+idea { module { downloadJavadoc = false } }
 
 tasks.withType(JavaCompile) { it.options.encoding = "UTF-8" }
 
@@ -51,4 +49,38 @@ task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload) {
   uploadFile = remapJar
   addGameVersion minecraft_version
   addLoader "fabric"
+}
+
+java { withSourcesJar() }
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      groupId = 'coffee.waffle'
+      artifactId = archivesBaseName
+      version = version
+      artifact(remapJar) { builtBy remapJar }
+      artifact(sourcesJar) { builtBy remapSourcesJar }
+    }
+  }
+  repositories {
+    maven {
+      name = "emmavenReleases"
+      url = "https://maven.waffle.coffee/releases"
+      credentials {
+        username = System.getenv().MAVEN_USER
+        password = System.getenv().MAVEN_PASS
+      }
+      authentication { basic(BasicAuthentication) }
+    }
+    maven {
+      name = "emmavenSnapshots"
+      url = "https://maven.waffle.coffee/snapshots"
+      credentials {
+        username = System.getenv().MAVEN_USER
+        password = System.getenv().MAVEN_PASS
+      }
+      authentication { basic(BasicAuthentication) }
+    }
+  }
 }
